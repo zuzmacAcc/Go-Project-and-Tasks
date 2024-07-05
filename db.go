@@ -51,11 +51,11 @@ func (s *MySQLStorage) createTasksTable() error {
 			name VARCHAR(255) NOT NULL,
 			status ENUM('TODO', 'IN_PROGRESS', 'IN_TESTING', 'DONE') NOT NULL DEFAULT 'TODO',
 			projectId INT UNSIGNED NOT NULL,
-			AssignedToID INT UNSIGNED NOT NULL,
+			assignedToId INT UNSIGNED NOT NULL,
 			createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
 			PRIMARY KEY (id),
-			FOREIGN KEY (AssignedToID) REFERENCES users(id),
+			FOREIGN KEY (assignedToId) REFERENCES users(id),
 			FOREIGN KEY (projectId) REFERENCES projects(id)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	`)

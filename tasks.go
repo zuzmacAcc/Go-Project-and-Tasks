@@ -72,5 +72,9 @@ func validateTaskPayload(task *Task) error {
 		return errUserIDRequired
 	}
 
+	if task.Status == "" {
+		task.Status = "TODO"
+	}
+
 	return nil
 }

@@ -24,7 +24,7 @@ func (s *Storage) CreateUser() error {
 }
 
 func (s *Storage) CreateTask(t *Task) (*Task, error) {
-	rows, err := s.db.Exec("INSERT INTO tasks (name, status, project_id, assigned_to) VALUES (?, ?, ?, ?)", t.Name, t.Status, t.ProjectID, t.AssignedToID)
+	rows, err := s.db.Exec("INSERT INTO tasks (name, status, projectId, assignedToId) VALUES (?, ?, ?, ?)", t.Name, t.Status, t.ProjectID, t.AssignedToID)
 
 	if err != nil {
 		return nil, err
