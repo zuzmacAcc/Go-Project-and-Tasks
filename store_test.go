@@ -15,3 +15,7 @@ func (s *MockStore) CreateTask(t *Task) (*Task, error) {
 func (s *MockStore) GetTask(id string) (*Task, error) {
 	return &Task{}, nil
 }
+
+func (s *MockStore) GetUserByID(id string) (*User, error) {
+	return &User{}, nil
+}
