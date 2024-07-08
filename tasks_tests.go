@@ -81,3 +81,27 @@ func TestCreateTask(t *testing.T) {
 		}
 	})
 }
+
+func TestGetTask(t *testing.T){
+	ms := &MockStore{}
+	service := NewTasksService(ms)
+
+	t.Run("should return the task", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodGet, "/tasks/1", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		rr := httptest.NewRecorder()
+		router := mux.NewRouter()
+
+		router.HandleFunc("/tasks/{id}", service.handleGetTask)
+		
+		router.ServeHTTP(rr, req)
+
+		if rr.Code != http.StatusOK {
+			t.Errorf("expected status code %d, got %d", http.StatusOK, rr.Code)
+		}
+
+	})
+}
