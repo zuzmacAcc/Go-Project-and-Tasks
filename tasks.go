@@ -29,19 +29,19 @@ func (s *TasksService) handleCreateTask(w http.ResponseWriter, r *http.Request) 
 
 	defer r.Body.Close()
 
-	var task *CreateTaskPayload
-	err = json.Unmarshal(body, &task)
+	var taskPayload *CreateTaskPayload
+	err = json.Unmarshal(body, &taskPayload)
 	if err != nil {
 		WriteJSON(w, http.StatusBadRequest, ErrorResponse{Error: "Invalid request payload"})
 		return
 	}
 
-	if err := validateTaskPayload(task); err != nil {
+	if err := validateTaskPayload(taskPayload); err != nil {
 		WriteJSON(w, http.StatusBadRequest, ErrorResponse{Error: err.Error()})
 		return
 	}
 
-	t, err := s.store.CreateTask(task)
+	t, err := s.store.CreateTask(taskPayload)
 	if err != nil {
 		WriteJSON(w, http.StatusInternalServerError, ErrorResponse{Error: "Error while creating the task"})
 		return

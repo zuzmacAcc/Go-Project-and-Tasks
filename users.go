@@ -2,17 +2,12 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"io"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-var errEmailRequired = errors.New("email is required")
-var errFirstNameRequired = errors.New("first name is required")
-var errLastNameRequired = errors.New("last name is required")
-var errPasswordRequired = errors.New("password is required")
 
 type UserService struct {
 	store Store
@@ -36,26 +31,26 @@ func (s *UserService) handleUserRegister(w http.ResponseWriter, r *http.Request)
 
 	defer r.Body.Close()
 
-	var payload *User
-	err = json.Unmarshal(body, &payload)
+	var userPayload *CreateUserPayload
+	err = json.Unmarshal(body, &userPayload)
 	if err != nil {
 		WriteJSON(w, http.StatusBadRequest, ErrorResponse{Error: "Invalid request payload"})
 		return
 	}
 
-	if err := validateUserPayload(payload); err != nil {
+	if err := validateUserPayload(userPayload); err != nil {
 		WriteJSON(w, http.StatusBadRequest, ErrorResponse{Error: err.Error()})
 		return
 	}
 
-	hashedPassword, err := HashPassword(payload.Password)
+	hashedPassword, err := HashPassword(userPayload.Password)
 	if err != nil {
 		WriteJSON(w, http.StatusInternalServerError, ErrorResponse{Error: "Error creating user"})
 		return
 	}
-	payload.Password = hashedPassword
+	userPayload.Password = hashedPassword
 
-	u, err := s.store.CreateUser(payload)
+	u, err := s.store.CreateUser(userPayload)
 	if err != nil {
 		WriteJSON(w, http.StatusInternalServerError, ErrorResponse{Error: "Error creating user"})
 		return
@@ -70,7 +65,7 @@ func (s *UserService) handleUserRegister(w http.ResponseWriter, r *http.Request)
 	WriteJSON(w, http.StatusCreated, token)
 }
 
-func validateUserPayload(user *User) error {
+func validateUserPayload(user *CreateUserPayload) error {
 	if user.Email == "" {
 		return errEmailRequired
 	}

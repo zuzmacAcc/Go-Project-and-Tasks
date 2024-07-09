@@ -4,7 +4,7 @@ package main
 
 type MockStore struct{}
 
-func (s *MockStore) CreateUser(u *User) (*User, error) {
+func (s *MockStore) CreateUser(u *CreateUserPayload) (*User, error) {
 	return &User{}, nil
 }
 

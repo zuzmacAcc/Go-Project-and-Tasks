@@ -4,7 +4,7 @@ import "database/sql"
 
 type Store interface {
 	// Users
-	CreateUser(u *User) (*User, error)
+	CreateUser(u *CreateUserPayload) (*User, error)
 	GetUserByID(id string) (*User, error)
 	//Project
 	CreateProject(p *CreateProjectPayload) (*Project, error)
@@ -23,8 +23,8 @@ func NewStore(db *sql.DB) *Storage {
 	}
 }
 
-func (s *Storage) CreateUser(u *User) (*User, error) {
-	rows, err := s.db.Exec("INSERT INTO users (email, firstName, lastName, password) VALUES (?, ?, ?, ?)", u.Email, u.FirstName, u.LastName, u.Password)
+func (s *Storage) CreateUser(userPayload *CreateUserPayload) (*User, error) {
+	rows, err := s.db.Exec("INSERT INTO users (email, firstName, lastName, password) VALUES (?, ?, ?, ?)", userPayload.Email, userPayload.FirstName, userPayload.LastName, userPayload.Password)
 	if err != nil {
 		return nil, err
 	}
@@ -34,8 +34,14 @@ func (s *Storage) CreateUser(u *User) (*User, error) {
 		return nil, err
 	}
 
-	u.ID = id
-	return u, nil
+	user := &User{
+		ID: id,
+		Email: userPayload.Email,
+		FirstName: userPayload.FirstName,
+		LastName: userPayload.LastName,
+		Password: userPayload.Password,
+	}
+	return user, nil
 }
 
 func (s *Storage) GetUserByID(id string) (*User, error) {

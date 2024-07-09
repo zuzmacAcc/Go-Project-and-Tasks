@@ -17,6 +17,13 @@ type CreateProjectPayload struct {
 	Name         string    `json:"name"`
 }
 
+type CreateUserPayload struct {
+	Email     string    `json:"email"`
+	FirstName string    `json:"firstName"`
+	LastName  string    `json:"lastName"`
+	Password  string    `json:"password"`
+}
+
 type Project struct {
 	ID           int64     `json:"id"`
 	Name         string    `json:"name"`
