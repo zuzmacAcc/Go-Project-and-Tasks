@@ -56,7 +56,7 @@ func (s *MySQLStorage) createTasksTable() error {
 
 			PRIMARY KEY (id),
 			FOREIGN KEY (assignedToId) REFERENCES users(id),
-			FOREIGN KEY (projectId) REFERENCES projects(id)
+			FOREIGN KEY (projectId) REFERENCES projects(id) ON DELETE CASCADE
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	`)
 

@@ -20,7 +20,7 @@ func (s *ProjectService) RegisterRoutes(r *mux.Router) {
 	r.HandleFunc("/projects", WithJWTAuth(s.handleCreateProject, s.store)).Methods("POST")
 	r.HandleFunc("/projects/{id}", WithJWTAuth(s.handleGetProject, s.store)).Methods("GET")
 	r.HandleFunc("/projects", WithJWTAuth(s.handleGetProjects, s.store)).Methods("GET")
-	// r.HandleFunc("/projects/{id}", WithJWTAuth(s.handleDeleteProject, s.store)).Methods("DELETE")
+	r.HandleFunc("/projects/{id}", WithJWTAuth(s.handleDeleteProject, s.store)).Methods("DELETE")
 }
 
 func (s *ProjectService) handleCreateProject(w http.ResponseWriter, r *http.Request) {
@@ -86,4 +86,18 @@ func (s *ProjectService) handleGetProjects(w http.ResponseWriter, r *http.Reques
 	}
 
 	WriteJSON(w, http.StatusOK, projects)
+}
+
+func (s *ProjectService) handleDeleteProject(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	err := s.store.DeleteProject(id)
+	if err != nil {
+		// WriteJSON(w, http.StatusInternalServerError, ErrorResponse{Error: "Error deleting project"})
+		WriteJSON(w, http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
+		return
+	}
+
+	WriteJSON(w, http.StatusNoContent, nil)
 }

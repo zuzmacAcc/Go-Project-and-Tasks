@@ -25,6 +25,10 @@ func (s *MockStore) CreateTask(t *CreateTaskPayload) (*Task, error) {
 	return &Task{}, nil
 }
 
+func (s *MockStore) DeleteProject(id string) error {
+	return nil
+}
+
 func (s *MockStore) GetTask(id string) (*Task, error) {
 	return &Task{}, nil
 }
@@ -32,3 +36,4 @@ func (s *MockStore) GetTask(id string) (*Task, error) {
 func (s *MockStore) GetUserByID(id string) (*User, error) {
 	return &User{}, nil
 }
+

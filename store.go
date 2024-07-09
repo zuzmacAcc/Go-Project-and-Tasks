@@ -10,6 +10,7 @@ type Store interface {
 	CreateProject(p *CreateProjectPayload) (*Project, error)
 	GetProject(id string) (*Project, error)
 	GetProjects() ([]*Project, error)
+	DeleteProject(id string) error
 	//Tasks
 	CreateTask(t *CreateTaskPayload) (*Task, error)
 	GetTask(id string) (*Task, error)
@@ -37,11 +38,11 @@ func (s *Storage) CreateUser(userPayload *CreateUserPayload) (*User, error) {
 	}
 
 	user := &User{
-		ID: id,
-		Email: userPayload.Email,
+		ID:        id,
+		Email:     userPayload.Email,
 		FirstName: userPayload.FirstName,
-		LastName: userPayload.LastName,
-		Password: userPayload.Password,
+		LastName:  userPayload.LastName,
+		Password:  userPayload.Password,
 	}
 	return user, nil
 }
@@ -65,10 +66,10 @@ func (s *Storage) CreateTask(taskPayload *CreateTaskPayload) (*Task, error) {
 	}
 
 	task := &Task{
-		ID: id,
-		Name: taskPayload.Name,
-		Status: taskPayload.Status,
-		ProjectID: taskPayload.ProjectID,
+		ID:           id,
+		Name:         taskPayload.Name,
+		Status:       taskPayload.Status,
+		ProjectID:    taskPayload.ProjectID,
 		AssignedToID: taskPayload.AssignedToID,
 	}
 	return task, nil
@@ -92,8 +93,8 @@ func (s *Storage) CreateProject(p *CreateProjectPayload) (*Project, error) {
 		return nil, err
 	}
 
-	project := &Project {
-		ID: id,
+	project := &Project{
+		ID:   id,
 		Name: p.Name,
 	}
 
@@ -132,4 +133,13 @@ func (s *Storage) GetProjects() ([]*Project, error) {
 	}
 
 	return projects, nil
+}
+
+func (s *Storage) DeleteProject(id string) error {
+	_, err := s.db.Exec("DELETE FROM projects WHERE id = ?", id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
