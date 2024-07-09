@@ -12,6 +12,16 @@ type CreateTaskPayload struct {
 	AssignedToID int64  `json:"assignedToId"`
 }
 
+type CreateProjectPayload struct {
+	Name         string    `json:"name"`
+}
+
+type Project struct {
+	ID           int64     `json:"id"`
+	Name         string    `json:"name"`
+	CreatedAt    time.Time `json:"createdAt"`
+}
+
 type Task struct {
 	ID           int64     `json:"id"`
 	Name         string    `json:"name"`

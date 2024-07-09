@@ -8,6 +8,10 @@ func (s *MockStore) CreateUser(u *User) (*User, error) {
 	return &User{}, nil
 }
 
+func (s *MockStore) CreateProject(p *CreateProjectPayload) (*Project, error) {
+	return &Project{}, nil
+}
+
 func (s *MockStore) CreateTask(t *Task) (*Task, error) {
 	return &Task{}, nil
 }

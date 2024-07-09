@@ -6,6 +6,8 @@ type Store interface {
 	// Users
 	CreateUser(u *User) (*User, error)
 	GetUserByID(id string) (*User, error)
+	//Project
+	CreateProject(p *CreateProjectPayload) (*Project, error)
 	//Tasks
 	CreateTask(t *Task) (*Task, error)
 	GetTask(id string) (*Task, error)
@@ -62,4 +64,25 @@ func (s *Storage) GetTask(id string) (*Task, error) {
 	var t Task
 	err := s.db.QueryRow("SELECT id, name, status, projectId, assignedToId, createdAt FROM tasks WHERE id = ?", id).Scan(&t.ID, &t.Name, &t.Status, &t.ProjectID, &t.AssignedToID, &t.CreatedAt)
 	return &t, err
+}
+
+func (s *Storage) CreateProject(p *CreateProjectPayload) (*Project, error) {
+	rows, err := s.db.Exec("INSERT INTO projects (name) VALUES (?)", p.Name)
+
+	if err != nil {
+		return nil, err
+	}
+
+	id, err := rows.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+
+	project := &Project {
+		ID: id,
+		Name: p.Name,
+	}
+
+	project.ID = id
+	return project, nil
 }
