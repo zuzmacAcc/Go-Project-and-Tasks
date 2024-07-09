@@ -12,7 +12,7 @@ func (s *MockStore) CreateProject(p *CreateProjectPayload) (*Project, error) {
 	return &Project{}, nil
 }
 
-func (s *MockStore) CreateTask(t *Task) (*Task, error) {
+func (s *MockStore) CreateTask(t *CreateTaskPayload) (*Task, error) {
 	return &Task{}, nil
 }
 

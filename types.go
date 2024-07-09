@@ -8,6 +8,7 @@ type ErrorResponse struct {
 
 type CreateTaskPayload struct {
 	Name         string `json:"name"`
+	Status       string `json:"status"`
 	ProjectID    int64  `json:"projectId"`
 	AssignedToID int64  `json:"assignedToId"`
 }

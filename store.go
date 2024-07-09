@@ -9,7 +9,7 @@ type Store interface {
 	//Project
 	CreateProject(p *CreateProjectPayload) (*Project, error)
 	//Tasks
-	CreateTask(t *Task) (*Task, error)
+	CreateTask(t *CreateTaskPayload) (*Task, error)
 	GetTask(id string) (*Task, error)
 }
 
@@ -44,8 +44,8 @@ func (s *Storage) GetUserByID(id string) (*User, error) {
 	return &u, err
 }
 
-func (s *Storage) CreateTask(t *Task) (*Task, error) {
-	rows, err := s.db.Exec("INSERT INTO tasks (name, status, projectId, assignedToId) VALUES (?, ?, ?, ?)", t.Name, t.Status, t.ProjectID, t.AssignedToID)
+func (s *Storage) CreateTask(taskPayload *CreateTaskPayload) (*Task, error) {
+	rows, err := s.db.Exec("INSERT INTO tasks (name, status, projectId, assignedToId) VALUES (?, ?, ?, ?)", taskPayload.Name, taskPayload.Status, taskPayload.ProjectID, taskPayload.AssignedToID)
 
 	if err != nil {
 		return nil, err
@@ -56,8 +56,14 @@ func (s *Storage) CreateTask(t *Task) (*Task, error) {
 		return nil, err
 	}
 
-	t.ID = id
-	return t, nil
+	task := &Task{
+		ID: id,
+		Name: taskPayload.Name,
+		Status: taskPayload.Status,
+		ProjectID: taskPayload.ProjectID,
+		AssignedToID: taskPayload.AssignedToID,
+	}
+	return task, nil
 }
 
 func (s *Storage) GetTask(id string) (*Task, error) {

@@ -29,7 +29,7 @@ func (s *TasksService) handleCreateTask(w http.ResponseWriter, r *http.Request) 
 
 	defer r.Body.Close()
 
-	var task *Task
+	var task *CreateTaskPayload
 	err = json.Unmarshal(body, &task)
 	if err != nil {
 		WriteJSON(w, http.StatusBadRequest, ErrorResponse{Error: "Invalid request payload"})
@@ -68,7 +68,11 @@ func (s *TasksService) handleGetTask(w http.ResponseWriter, r *http.Request) {
 	WriteJSON(w, http.StatusOK, task)
 }
 
-func validateTaskPayload(task *Task) error {
+func validateTaskPayload(task *CreateTaskPayload) error {
+	if task.Status == "" {
+		task.Status = "TODO"
+	}
+
 	if task.Name == "" {
 		return errNameRequired
 	}
@@ -79,10 +83,6 @@ func validateTaskPayload(task *Task) error {
 
 	if task.AssignedToID == 0 {
 		return errUserIDRequired
-	}
-
-	if task.Status == "" {
-		task.Status = "TODO"
 	}
 
 	return nil
