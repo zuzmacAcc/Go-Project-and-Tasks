@@ -6,6 +6,7 @@ type Store interface {
 	// Users
 	CreateUser(u *CreateUserPayload) (*User, error)
 	GetUserByID(id string) (*User, error)
+	GetUserByEmail(email string) (*User, error)
 	//Project
 	CreateProject(p *CreateProjectPayload) (*Project, error)
 	GetProject(id string) (*Project, error)
@@ -51,6 +52,12 @@ func (s *Storage) CreateUser(userPayload *CreateUserPayload) (*User, error) {
 func (s *Storage) GetUserByID(id string) (*User, error) {
 	var u User
 	err := s.db.QueryRow("SELECT id, email, firstName, lastName, createdAt FROM users WHERE id = ?", id).Scan(&u.ID, &u.Email, &u.FirstName, &u.LastName, &u.CreatedAt)
+	return &u, err
+}
+
+func (s *Storage) GetUserByEmail(email string) (*User, error) {
+	var u User
+	err := s.db.QueryRow("SELECT id, email, firstName, lastName, password, createdAt FROM users WHERE email = ?", email).Scan(&u.ID, &u.Email, &u.FirstName, &u.LastName, &u.Password, &u.CreatedAt)
 	return &u, err
 }
 
