@@ -17,6 +17,10 @@ func (s *MockStore) GetProject(id string) (*Project, error) {
 	return &Project{}, nil
 }
 
+func (s *MockStore)GetProjects() ([]*Project, error){
+	return []*Project{}, nil
+}
+
 func (s *MockStore) CreateTask(t *CreateTaskPayload) (*Task, error) {
 	return &Task{}, nil
 }

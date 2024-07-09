@@ -9,6 +9,7 @@ type Store interface {
 	//Project
 	CreateProject(p *CreateProjectPayload) (*Project, error)
 	GetProject(id string) (*Project, error)
+	GetProjects() ([]*Project, error)
 	//Tasks
 	CreateTask(t *CreateTaskPayload) (*Task, error)
 	GetTask(id string) (*Task, error)
@@ -104,4 +105,31 @@ func (s *Storage) GetProject(id string) (*Project, error) {
 	var p Project
 	err := s.db.QueryRow("SELECT id, name, createdAt FROM projects WHERE id = ?", id).Scan(&p.ID, &p.Name, &p.CreatedAt)
 	return &p, err
+}
+
+func (s *Storage) GetProjects() ([]*Project, error) {
+	rows, err := s.db.Query("SELECT id, name, createdAt FROM projects")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	projects := []*Project{}
+
+	for rows.Next() {
+		// p := new(Project)
+		var p Project
+		err := rows.Scan(&p.ID, &p.Name, &p.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		// projects = append(projects, p)
+		projects = append(projects, &p)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return projects, nil
 }

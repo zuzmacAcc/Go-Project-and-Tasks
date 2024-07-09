@@ -19,6 +19,7 @@ func NewProjectService(s Store) *ProjectService {
 func (s *ProjectService) RegisterRoutes(r *mux.Router) {
 	r.HandleFunc("/projects", WithJWTAuth(s.handleCreateProject, s.store)).Methods("POST")
 	r.HandleFunc("/projects/{id}", WithJWTAuth(s.handleGetProject, s.store)).Methods("GET")
+	r.HandleFunc("/projects", WithJWTAuth(s.handleGetProjects, s.store)).Methods("GET")
 	// r.HandleFunc("/projects/{id}", WithJWTAuth(s.handleDeleteProject, s.store)).Methods("DELETE")
 }
 
@@ -75,4 +76,14 @@ func (s *ProjectService) handleGetProject(w http.ResponseWriter, r *http.Request
 	}
 
 	WriteJSON(w, http.StatusOK, project)
+}
+
+func (s *ProjectService) handleGetProjects(w http.ResponseWriter, r *http.Request) {
+	projects, err := s.store.GetProjects()
+	if err != nil {
+		WriteJSON(w, http.StatusInternalServerError, ErrorResponse{Error: "projects not found"})
+		return
+	}
+
+	WriteJSON(w, http.StatusOK, projects)
 }
