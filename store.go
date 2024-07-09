@@ -8,6 +8,7 @@ type Store interface {
 	GetUserByID(id string) (*User, error)
 	//Project
 	CreateProject(p *CreateProjectPayload) (*Project, error)
+	GetProject(id string) (*Project, error)
 	//Tasks
 	CreateTask(t *CreateTaskPayload) (*Task, error)
 	GetTask(id string) (*Task, error)
@@ -97,4 +98,10 @@ func (s *Storage) CreateProject(p *CreateProjectPayload) (*Project, error) {
 
 	project.ID = id
 	return project, nil
+}
+
+func (s *Storage) GetProject(id string) (*Project, error) {
+	var p Project
+	err := s.db.QueryRow("SELECT id, name, createdAt FROM projects WHERE id = ?", id).Scan(&p.ID, &p.Name, &p.CreatedAt)
+	return &p, err
 }

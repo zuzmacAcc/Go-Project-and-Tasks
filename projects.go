@@ -18,7 +18,7 @@ func NewProjectService(s Store) *ProjectService {
 
 func (s *ProjectService) RegisterRoutes(r *mux.Router) {
 	r.HandleFunc("/projects", WithJWTAuth(s.handleCreateProject, s.store)).Methods("POST")
-	// r.HandleFunc("/projects/{id}", WithJWTAuth(s.handleGetProject, s.store)).Methods("GET")
+	r.HandleFunc("/projects/{id}", WithJWTAuth(s.handleGetProject, s.store)).Methods("GET")
 	// r.HandleFunc("/projects/{id}", WithJWTAuth(s.handleDeleteProject, s.store)).Methods("DELETE")
 }
 
@@ -57,4 +57,22 @@ func validateProjectPayload(project *CreateProjectPayload) error {
 	}
 
 	return nil
+}
+
+func (s *ProjectService) handleGetProject(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	if id == "" {
+		WriteJSON(w, http.StatusBadRequest, ErrorResponse{Error: "id is required"})
+		return
+	}
+
+	project, err := s.store.GetProject(id)
+	if err != nil {
+		WriteJSON(w, http.StatusInternalServerError, ErrorResponse{Error: "project not found"})
+		return
+	}
+
+	WriteJSON(w, http.StatusOK, project)
 }
