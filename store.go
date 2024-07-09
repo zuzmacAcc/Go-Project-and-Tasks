@@ -14,6 +14,7 @@ type Store interface {
 	//Tasks
 	CreateTask(t *CreateTaskPayload) (*Task, error)
 	GetTask(id string) (*Task, error)
+	DeleteTask(id string) error
 }
 
 type Storage struct {
@@ -79,6 +80,15 @@ func (s *Storage) GetTask(id string) (*Task, error) {
 	var t Task
 	err := s.db.QueryRow("SELECT id, name, status, projectId, assignedToId, createdAt FROM tasks WHERE id = ?", id).Scan(&t.ID, &t.Name, &t.Status, &t.ProjectID, &t.AssignedToID, &t.CreatedAt)
 	return &t, err
+}
+
+func (s *Storage) DeleteTask(id string) error {
+	_, err := s.db.Exec("DELETE FROM tasks WHERE id = ?", id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *Storage) CreateProject(p *CreateProjectPayload) (*Project, error) {

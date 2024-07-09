@@ -52,14 +52,6 @@ func (s *ProjectService) handleCreateProject(w http.ResponseWriter, r *http.Requ
 	WriteJSON(w, http.StatusCreated, p)
 }
 
-func validateProjectPayload(project *CreateProjectPayload) error {
-	if project.Name == "" {
-		return errNameRequired
-	}
-
-	return nil
-}
-
 func (s *ProjectService) handleGetProject(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -100,4 +92,13 @@ func (s *ProjectService) handleDeleteProject(w http.ResponseWriter, r *http.Requ
 	}
 
 	WriteJSON(w, http.StatusNoContent, nil)
+}
+
+
+func validateProjectPayload(project *CreateProjectPayload) error {
+	if project.Name == "" {
+		return errNameRequired
+	}
+
+	return nil
 }

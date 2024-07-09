@@ -37,3 +37,7 @@ func (s *MockStore) GetUserByID(id string) (*User, error) {
 	return &User{}, nil
 }
 
+
+func (s *MockStore) DeleteTask(id string) error {
+	return nil
+}

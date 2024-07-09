@@ -19,6 +19,7 @@ func NewTasksService(s Store) *TasksService {
 func (s *TasksService) RegisterRoutes(r *mux.Router) {
 	r.HandleFunc("/tasks", WithJWTAuth(s.handleCreateTask, s.store)).Methods("POST")
 	r.HandleFunc("/tasks/{id}", WithJWTAuth(s.handleGetTask, s.store)).Methods("GET")
+	r.HandleFunc("/tasks/{id}", WithJWTAuth(s.handleDeleteTask, s.store)).Methods("DELETE")
 }
 
 func (s *TasksService) handleCreateTask(w http.ResponseWriter, r *http.Request) {
@@ -66,6 +67,19 @@ func (s *TasksService) handleGetTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	WriteJSON(w, http.StatusOK, task)
+}
+
+func (s *TasksService) handleDeleteTask(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	err := s.store.DeleteTask(id)
+	if err != nil {
+		WriteJSON(w, http.StatusInternalServerError, ErrorResponse{Error: "Error deleting task"})
+		return
+	}
+
+	WriteJSON(w, http.StatusNoContent, nil)
 }
 
 func validateTaskPayload(task *CreateTaskPayload) error {
