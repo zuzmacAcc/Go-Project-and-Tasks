@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 
@@ -85,7 +84,8 @@ func CreateJWT(secret []byte, userID int64) (string, error) {
 }
 
 func validateJWT(tokenString string) (*jwt.Token, error) {
-	secret := os.Getenv("JWT_SECRET")
+	//secret := os.Getenv("JWT_SECRET")
+	secret := []byte(Envs.JWTSecret)
 
 	return jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
